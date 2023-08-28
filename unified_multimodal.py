@@ -35,7 +35,7 @@ class UniMultiModalFramework:
         self._yolo_conf_threshold = yolo_conf_threshold
 
     def _register_sam(self):
-        self._sam = sam_model_registry[self._model_type](checkpoint=self._sam_checkpoint)
+        self._sam = sam_model_registry[self._sam_model_type](checkpoint=self._sam_checkpoint)
         self._sam.to(device=self._device)
 
     def sa_to_masks(
@@ -53,7 +53,7 @@ class UniMultiModalFramework:
             image_path: str,
             conf_threshold: int = None,
         ) -> Any:
-        model = yolon.get(self._yolo_model, pretrained_wrights=self._yolo_pretrained_weights)
+        model = yolon.get(self._yolo_model, pretrained_weights=self._yolo_pretrained_weights)
         if conf_threshold is None:
             conf_threshold = self._conf_threshold
         detection = model.predict(image_path, conf=conf_threshold)
@@ -95,7 +95,7 @@ class UniMultiModalFramework:
     ## helpers
     def show_mask(self, mask, ax, random_color=False):
         if random_color:
-            color = np.concatenate([np.random.random(3), np.array([0.6])], aixs=0)
+            color = np.concatenate([np.random.random(3), np.array([0.6])], axis=0)
         else:
             color = np.array([30/255, 144/255, 255/255, 0.6])
         h, w = mask.shape[-2:]
@@ -105,8 +105,8 @@ class UniMultiModalFramework:
     def show_points(self, coords, labels, ax, marker_size=375):
         pos_points = coords[labels==1]
         neg_points = coords[labels==0]
-        ax.scatter(pos_points[:, 0], pos_points[:, 1], color='green', marker='*', s=market_size, edgecolor='white', linewidth=1.25)
-        ax.scatter(neg_points[:, 0], neg_points[:, 1], color='red', marker='*', s=market_size, edgecolor='white', linewidth=1.25)
+        ax.scatter(pos_points[:, 0], pos_points[:, 1], color='green', marker='*', s=marker_size, edgecolor='white', linewidth=1.25)
+        ax.scatter(neg_points[:, 0], neg_points[:, 1], color='red', marker='*', s=marker_size, edgecolor='white', linewidth=1.25)
 
     def show_box(self, box, ax):
         x0, y0 = box[0], box[1]
